@@ -2,7 +2,10 @@
 
 </style>
 <template>
-    aaaaa
+   <div>
+       404
+   </div>
+
 </template>
 <script>
 

@@ -1,187 +1,90 @@
-<style>
-    body{
-        background:#fff;
-    }
-    .g-body {
-        overflow-x: hidden;
-        overflow-y: auto;
-        position: relative;
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
-        height: 100%;
-        padding: 110px 20px 0 270px;
-    }
-
-    .g-statues-bar {
-        position: fixed;
-        z-index: 90;
-        top: 55px;
-        left: 0;
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
-        width: 100%;
-        height: 40px;
-        margin-left: 270px;
-        background: #fff;
-    }
-
-    .g-statues-bar .bread {
-        line-height: 40px;
-    }
-
-    .g-side {
-        position: fixed;
-        z-index: 90;
-        top: 0;
-        left: 0;
-        box-sizing: border-box;
-        width: 230px;
-        height: 100%;
-        padding-top: 55px;
-        border-right: 1px solid #dedede;
-        overflow-y: auto;
-    }
-
-    .g-head {
-        position: fixed;
-        z-index: 91;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 55px;
-        line-height: 55px;
-        background: #409EFF;
-    }
-
-    .logo {
-        float: left;
-        text-align: center;
-        width: 270px;
-        font-size: 1.4em;
-        text-decoration: none;
-        color:#fff;
-    }
-
-    .nav {
-        -webkit-box-flex: 1;
-        -webkit-flex: 1;
-        -ms-flex: 1;
-        flex: 1;
-    }
-    .usermenu {
-        float: right;
-        padding: 0 2em;
-        color:#fff;
-    }
-    .usermenu a {
-        text-decoration: none;
-        margin: 0 0.2em 0 1em;
-        color:inherit;
-    }
-    #main {
-        height: 100%;
-        overflow-x: hidden;
-        overflow-y: auto;
-    }
+<style lang="less">
+    @import "./index";
 </style>
 <template>
-    <div class="g-body">
-        <el-row type="flex" class="g-head">
-            <a href="javascript:;" target="_blank" title="Vue权限控制" class="logo" >Vue-Access-Control</a>
-            <div class="nav">
-                <div class="usermenu" v-if="user.id">
-                    欢迎您：{{user.name}}
-                    <router-link :to="{path: '/'}"><i class="el-icon-location"></i>首页</router-link>
-                    <a href="javascript:;" @click="logout"><i class="el-icon-circle-close"></i>退出</a>
+    <div class="main">
+        <div class="left-menu">
+            <div class="logo">
+                <div class="logo-detail">
+                    <img class="logo-img" src="../../src/assets/images/login-logo.png">
+                    <div class="logo-name">
+                        <p>园区管理系统</p>
+                        <p>Estate Manage System</p>
+                    </div>
                 </div>
             </div>
-        </el-row>
-
-        <el-menu :default-active="activeMenu" class="g-side" router >
-            <template v-for="(route, index) in menus">
-                <template v-if="route.children.length>0">
-                    <el-submenu :key="index" :index="route.name">
-                        <template slot="title"><span>{{route.meta.name || route.name}}</span></template>
-                        <el-menu-item v-for="(cRoute ,cIndex) in route.children" :key="cIndex" :index="cRoute.name">
-                            <i class="ion menuIcon"></i>{{cRoute.meta.name || cRoute.name}}
-                        </el-menu-item>
-                    </el-submenu>
-                </template>
-                <template v-else>
-                    <el-menu-item :route="route" :index="route.name">{{route.meta.name || route.name}}</el-menu-item>
-                </template>
-                <!--<template v-if="route.children">-->
-                    <!--<el-submenu :key="index" :index="route.name">-->
-                        <!--<template slot="title">-->
-                            <!--{{route.meta.name || route.name}}</template>-->
-                        <!--<el-menu-item v-for="(cRoute, cIndex) in route.children" :key="cIndex" :index="cRoute.name" :route="cRoute"><i class="ion menuIcon" v-html="cRoute.meta.icon"></i>{{cRoute.meta.name || cRoute.name}}</el-menu-item>-->
-                    <!--</el-submenu>-->
-                <!--</template>-->
-                <!--<template v-else>-->
-                    <!--<el-menu-item :route="route" :index="route.name">{{route.meta.name || route.name}}</el-menu-item>-->
-                <!--</template>-->
-            </template>
-        </el-menu>
-
-        <div class="g-statues-bar p-lr">
-            <el-breadcrumb separator="/" class="bread" id="mybread">
-                <el-breadcrumb-item v-for="(item,index) in breadcrumbs" :key="index" :to="item">
-                    {{ item.meta.name || item.name }}
-                </el-breadcrumb-item>
-            </el-breadcrumb>
+            <side-menu :menu-list="menus" :open-names="openNames" :active-child="activeChild"></side-menu>
         </div>
-        <router-view id="main"></router-view>
+        <header class="header">
+        </header>
+        <div class="content">
+            <transition name="fade" mode="out-in">
+                <router-view ></router-view>
+            </transition>
+        </div>
     </div>
+    <!---->
 </template>
 <script>
-  import store from "../store";
+    import store from '../store/index';
+    import sideMenu from '../components/main/menu.vue';
+    import {sessionStorage,localStorage} from '../../src/common/storage/index';
+    export default {
+        components: {
+            sideMenu
+        },
+        data() {
+          return {
+              isCollapsed:false,
+              user: {},
+              activeChild:'',
+              menus: [],
+              breadcrumbs: [],
+              openNames:[],
+          };
+        },
+        watch: {
+            '$route' (to) {
+                let matched = this.$route.matched;
+                this.activeChild = this.$route.name;
+                this.breadcrumbs = (this.$route && this.$route.matched) || [];
+                this.openNames = [];
+                if(matched.length > 2){
+                    this.openNames[0] = matched[1].name;
+                }
+                this.$store.commit('SET_OPEN_MENU',this.openNames);
+                this.$store.commit('SET_ACTIVE_CHILD',this.activeChild);
+            },
 
-  export default {
-    components: {
-//      dashboard: () => import("../components/dashboard.vue")
-    },
-    data() {
-      return {
-        user: {},
-        activeMenu: "",
-        menus: [],
-        breadcrumbs: []
-      };
-    },
-    watch: {
-      $route: function(to, from) {
-        this.activeMenu = this.$route.name;
-        this.breadcrumbs = (this.$route && this.$route.matched) || [];
-      }
-    },
-    methods: {
+        },
+        methods: {
+            handleChange(active){
+                console.log(active);
+            }
+        },
+        created: function() {
+            let login = this.$store.state.user.user_info.login;
+            if(login){
+                this.activeChild = this.$store.state.app.activeChild;
+                this.breadcrumbs = (this.$route && this.$route.matched) || [];
+            }else{
+                this.$route.push({path:'/login'});
+            }
+            let menus = store.state.app.menuList;
+            menus = menus.map(function (value) {
+                value.icon = value.meta.icon;
+                return value;
+            })
+            if(menus){
+                this.menus = menus
+            }
 
-    },
-    created: function() {
-        let user = store.state.user_info.user;
-        if(user){
-            console.log(this.$route);
-            this.activeMenu = this.$route.name;
-            this.breadcrumbs = (this.$route && this.$route.matched) || [];
-        }else{
-            this.$route.push({path:'/login'});
+            let opendArr = sessionStorage.get('openedSubmenuArr');
+            if( !opendArr ){
+                this.openNames = [];
+            }else{
+                this.openNames = opendArr;
+            }
         }
-        let menus = this.$parent.menuData;
-        console.log(menus,3);
-        if(menus){
-            this.menus = menus
-        }
-//      if (user) {
-//        this.user = user;
-//        this.activeMenu = this.$route.name;
-//        this.breadcrumbs = (this.$route && this.$route.matched) || [];
-//      } else {
-//        this.$router.push({ path: "/login" });
-//      }
-//      let menus = this.$parent.menuData;
-//      if (menus) {
-//        this.menus = menus;
-//      }
-    }
-  };
+  }
 </script>

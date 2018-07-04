@@ -3,7 +3,7 @@
 </style>
 <template>
     <div>
-        asdadasdasda
+        cc
     </div>
 </template>
 <script>

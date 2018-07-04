@@ -1,6 +1,6 @@
 import Vue from 'vue'
+import iView from 'iview';
 import Router from 'vue-router'
-// import HelloWorld from '@/components/HelloWorld'
 Vue.use(Router)
 
 let baseRoute = [{
@@ -13,8 +13,12 @@ let router = new Router({
 })
 router.beforeEach((to,from,next)=>{
     let routerName = to.meta.name || to.name;
-    window.document.title = (routerName ? routerName : 'vueAdmin');
+    iView.LoadingBar.start();
+    window.document.title = (routerName ? routerName : '');
     next();
+})
+router.afterEach(() => {
+    iView.LoadingBar.finish();
 })
 export default router;
 // export default new Router({

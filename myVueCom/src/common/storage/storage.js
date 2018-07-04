@@ -30,7 +30,6 @@ class Storage {
     } catch (e) {
       value = value
     }
-
     this.store.setItem(toolsUri.encode(this.prefix + key), toolsUri.encode(value))
 
     return this
@@ -47,13 +46,13 @@ class Storage {
     }
     let value = this.store.getItem(toolsUri.encode(this.prefix + key))
     if (value === null) {
-      return {}
+      return null;
     }
 
     try {
       value = JSON.parse(toolsUri.decode(value))
     } catch (e) {
-      value = {}
+      value = null;
     }
     return value
   }

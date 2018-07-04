@@ -1,9 +1,4 @@
-<style>
-
-</style>
 <template>
-   <div>aaaa</div>
+    <router-view>
+    </router-view>
 </template>
-<script>
-
-</script>

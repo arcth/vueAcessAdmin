@@ -1,0 +1,51 @@
+body{
+    background:#f3f3f3;
+}
+.left-menu{
+    width: 200px;
+    position: fixed;
+    height: 100vh;
+    overflow: auto;
+    background-color: #495060;
+    z-index: 2;
+    .logo{
+        display: table;
+        width: 100%;
+        color: #fff;
+        height:68px;
+        text-align: center;
+        .logo-detail{
+            display: table-cell;
+            vertical-align: middle;
+            width: 100%;
+            .logo-img{
+                display: inline-block;
+                height: 28px;
+                width: 28px;
+                margin-right: 8px;
+                image-rendering: auto;
+                vertical-align: middle;
+            }
+            .logo-name{
+                display: inline-block;
+                vertical-align: middle;
+                text-align: left;
+            }
+        }
+    }
+}
+.header{
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 200px;
+    height: 68px;
+    z-index: 2;
+    background-color: #fff;
+    box-shadow: 1px 1px 1px rgba(0,0,0,.1);
+
+}
+.content{
+    padding: 80px 0 0 220px;
+    overflow: auto;
+}

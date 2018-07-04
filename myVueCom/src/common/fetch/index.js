@@ -2,17 +2,16 @@ import axios from 'axios';
 import store from '../../store';
 import {Message} from 'iview';
 import { server_base_url } from '../../common/config';
-import {SET_USER_INFO} from "../../store/actions/type";
-import {GET_USER_INFO} from "../../store/getters/type";
+
 import qs from 'qs';
 //设置用户信息
 const setUserInfo = function(user){
-  store.dispatch(SET_USER_INFO,user);
+  store.commit('SET_USER_INFO',user);
 }
 
 //获取用户信息
 const getUserInfo = function(){
-  let user_info = store.state.user_info.user;
+  let user_info = store.state.user.user_info.user;
   if(!user_info){
     return {};
   }
@@ -59,11 +58,12 @@ export default {
         method:'post',
         baseURL: server_base_url,
         url,
+        withCredentials:true,
         data:qs.stringify(data),
         timeout:10000,
-        headers:{
-          USERINFO : getUserInfo()
-        }
+        // headers:{
+        //   USERINFO : getUserInfo()
+        // }
       }).then((response) => {
           return checkStatus(response);
       }).then((res) => {
@@ -77,9 +77,9 @@ export default {
       url,
       params,
       timeout:10000,
-      headers:{
-        USERINFO : getUserInfo()
-      }
+      // headers:{
+      //   USERINFO : getUserInfo()
+      // }
     }).then((response)=>{
         return checkStatus(response);
     }).then((res) => {

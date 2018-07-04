@@ -1,4 +1,3 @@
-# yes
 
 > A Vue.js project
 

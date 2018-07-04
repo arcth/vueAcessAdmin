@@ -3,6 +3,7 @@ const path = require('path')
 const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
@@ -24,7 +25,7 @@ module.exports = {
     extensions: ['.js', '.vue', '.json'],
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
-      '@': resolve('src'),
+      '@': resolve('../src'),
     }
   },
   module: {
@@ -38,6 +39,13 @@ module.exports = {
         test: /\.js$/,
         loader: 'babel-loader',
         include: [resolve('src'), resolve('test')]
+      },
+      {
+          test: /\.less$/,
+          use: ExtractTextPlugin.extract({
+                use: ['css-loader?minimize','autoprefixer-loader', 'less-loader'],
+                fallback: 'style-loader'
+          }),
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,

@@ -7,6 +7,12 @@ const baseWebpackConfig = require('./webpack.base.conf')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const portfinder = require('portfinder')
+const fs = require('fs');
+
+fs.open('./build/env.js', 'w', function(err, fd) {
+    const buf = 'export default "development";';
+    fs.write(fd, buf, 0, buf.length, 0, function(err, written, buffer) {});
+});
 
 const devWebpackConfig = merge(baseWebpackConfig, {
   module: {
@@ -15,7 +21,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
   // cheap-module-eval-source-map is faster for development
   devtool: config.dev.devtool,
 
-  // these devServer options should be customized in /config/index.js
+  // these devServer options should be customized in /config/type.js
   devServer: {
     clientLogLevel: 'warning',
     historyApiFallback: true,

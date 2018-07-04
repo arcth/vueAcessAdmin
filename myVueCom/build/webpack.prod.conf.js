@@ -9,8 +9,13 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
-
+const fs = require('fs');
 const env = require('../config/prod.env')
+
+fs.open('./build/env.js', 'w', function(err, fd) {
+    const buf = 'export default "production";';
+    fs.write(fd, buf, 0, buf.length, 0, function(err, written, buffer) {});
+});
 
 const webpackConfig = merge(baseWebpackConfig, {
   module: {
